@@ -1,0 +1,62 @@
+html {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+canvas {
+    margin: 0;
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+}
+
+input {
+    height: 1.5rem;
+    width: 15rem;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    text-align: center;
+}
+
+li {
+    padding: 0.75rem;
+}
+
+.openCloseMenu {
+    width: 1rem;
+    height: 1rem;
+}
+
+.item-delete {
+    width: 1rem;
+    height: 1rem;
+    float: right;
+}
+
+#menu {
+    height: 100vh;
+    width: 20rem;
+}
+
+#newItemButton {
+    height: 2rem;
+    width: 10rem;
+    margin-top: 0.5rem;
+}
+
+#menu-item {
+    text-align: center;
+}
+
+#counter {
+    font-size: 24px;
+    text-align: center;
+}
+
+
