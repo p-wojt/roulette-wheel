@@ -1,40 +1,33 @@
 import { Component } from "./base-component";
-import { ItemEl } from "./menu-item";
+import { MenuItem } from "./menu-item";
 
-export class ItemElList extends Component<HTMLUListElement> {
-    private items: ItemEl[];
+export class MenuItemList extends Component<HTMLUListElement> {
+  private items: MenuItem[];
 
-    constructor(){
-        const UList = document.createElement('ul');
-        UList.className = 'item-list';
-        super(UList);
-        this.items = [];
-    }
+  constructor() {
+    const UList = document.createElement("ul");
+    UList.className = "item-list";
+    super(UList);
+    this.items = [];
+  }
 
-    get itemsLength() {
-        return this.items.length;
-    }
-    
-    addItem(item: ItemEl){
-        this.items.push(item);
-        this.el.appendChild(item.el);
-    }
+  get itemsLength() {
+    return this.items.length;
+  }
 
-    clear(){
-        this.removeChildren();
-        this.items = [];
-    }
+  addItem(item: MenuItem) {
+    this.items.push(item);
+    this.el.appendChild(item.el);
+  }
 
-    removeItem(item: ItemEl){
-        item.el.remove();
-        const indexToRemove = this.items.indexOf(item);
-        this.items.splice(indexToRemove, 1);
-    }
+  clear() {
+    this.removeChildren();
+    this.items = [];
+  }
 
-    findLastItem(){
-        if(this.items.length > 0){
-            return this.items[this.items.length - 1];
-        }
-        return null;
-    }
+  removeItem(item: MenuItem) {
+    item.el.remove();
+    const indexToRemove = this.items.indexOf(item);
+    this.items.splice(indexToRemove, 1);
+  }
 }

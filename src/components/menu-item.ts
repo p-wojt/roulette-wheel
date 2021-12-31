@@ -1,12 +1,12 @@
 import { Component } from "./base-component";
-import { DeleteItemEl } from "./menu-delete-item";
+import { ItemRemoval } from "./item-removal";
 
-export class ItemEl extends Component<HTMLLIElement> {
+export class MenuItem extends Component<HTMLLIElement> {
 
-    deleteItem: DeleteItemEl;
+    deleteItem: ItemRemoval;
 
     constructor(id: number, value: string, color: string){
-        const deleteItem = new DeleteItemEl(id);
+        const deleteItem = new ItemRemoval(id);
         const el = document.createElement('li');
         el.className = 'menu-item';
         el.id = `${id}-item`;

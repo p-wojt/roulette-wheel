@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Roulette wheel</title>
     <script type="module" src="dist/bundle.js"></script>
-    <link rel="stylesheet" href="app.css">
-</head>
-<body>
-    <div id="menu">
-        <img src="static/right-arrow.png" alt="open-close-arrow" class="openCloseMenu">
-        <p id="counter">0/16</p>
-        <div id="newItem">
-            <label for="newItem">Item name</label>
-            <input name="newItem" minlength="1" maxlength="32">
-            <button id="newItemButton">Add</button>
-            <button id="removeAllItemsButton">Remove all</button>
-        </div>
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body>
+    <div class="menu">
+      <div class="open-close-menu">
+      </div>
+      <div class="counter">
+      </div>
+      <div class="item-menu">
+        <label for="new-item">Item name</label>
+        <input name="new-item" minlength="1" maxlength="32">
+        <button class="new-item-button">Add</button>
+        <button class="remove-all-items-button">Remove all</button>
+      </div>
     </div>
-    <canvas></canvas>
-    <footer><div>Icons made by <a href="https://www.flaticon.com/authors/roundicons" title="Roundicons">Roundicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div></footer>
-</body>
+  </body>
 </html>

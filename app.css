@@ -1,18 +1,6 @@
 html {
     font-family: 'Courier New', Courier, monospace;
 }
-
-canvas {
-    margin: 0;
-    position: absolute;
-    width: 500px;
-    height: 500px;
-    top: 50%;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%);
-}
-
 input {
     height: 1.5rem;
     width: 15rem;
@@ -28,7 +16,12 @@ li {
     padding: 0.75rem;
 }
 
-.openCloseMenu {
+.open-close-menu{
+    display: flex;
+    justify-content: right;
+}
+
+.open-close-arrow {
     width: 1rem;
     height: 1rem;
 }
@@ -39,12 +32,22 @@ li {
     float: right;
 }
 
-#menu {
+.decreasing {
+    width: 0.1rem;
+    transition-duration: 3s;
+}
+
+.normal {
+    width: 20rem;
+    transition-duration: 3s;
+}
+
+.menu {
     height: 100vh;
     width: 20rem;
 }
 
-#newItemButton {
+.new-item-button {
     height: 2rem;
     width: 10rem;
     margin-top: 0.5rem;
@@ -54,7 +57,7 @@ li {
     text-align: center;
 }
 
-#counter {
+.counter {
     font-size: 24px;
     text-align: center;
 }
