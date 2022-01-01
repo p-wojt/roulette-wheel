@@ -9,17 +9,22 @@
     <link rel="stylesheet" href="app.css" />
   </head>
   <body>
+    <div class="light-dark-mode">
+      <img class="moon-sun" src='static/moon.png' alt="mode">
+    </div>
     <div class="menu">
-      <div class="open-close-menu">
-      </div>
-      <div class="counter">
-      </div>
-      <div class="item-menu">
-        <label for="new-item">Item name</label>
-        <input name="new-item" minlength="1" maxlength="32">
-        <button class="new-item-button">Add</button>
-        <button class="remove-all-items-button">Remove all</button>
-      </div>
+      <!-- <div class="open-close-menu">
+        <img class="close-arrow" src="static/right-arrow.png" alt="close menu" />
+      </div> -->
+      <p class="counter"></p>
+      <label for="new-item">Item name</label>
+      <input name="new-item" minlength="1" maxlength="32" />
+      <button class="add-item-button">Add</button>
+      <button class="remove-all-items-button">Remove all</button>
+      <ul class="menu-item-list"></ul>
+    </div>
+    <div class="roulette-wheel">
+      <canvas></canvas>
     </div>
   </body>
 </html>

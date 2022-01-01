@@ -1,35 +1,35 @@
-import { Counter } from "../model/counter";
-import { Component } from "./base-component";
 
-export class CounterItem extends Component<HTMLElement>{
-    private counter: Counter;
+// import { Component } from "./base-component";
 
-    constructor(min: number, max: number){
-        const counterEl = document.createElement('p');
-        counterEl.textContent = `${min}/${max}`;
-        counterEl.className = 'counter-item';
-        super(counterEl);
-        this.counter = new Counter(min, max);
-    }
+// export class CounterItem extends Component<HTMLElement>{
+//     private counter: Counter;
 
-    get getCounter(){
-        return this.counter;
-    }
+//     constructor(min: number, max: number){
+//         const counterEl = document.createElement('p');
+//         counterEl.textContent = `${min}/${max}`;
+//         counterEl.className = 'counter-item';
+//         super(counterEl);
+//         this.counter = new Counter(min, max);
+//     }
 
-    updateContent(){
-        this.el.textContent = `${Counter.value}/${this.counter.max}`
-        this.animate();
-    }
+//     get getCounter(){
+//         return this.counter;
+//     }
 
-    private animate(): void{
-        this.el.animate(
-            [
-                { transform: 'scale(1.25)'},
-                { transform: 'scale(1.00)'}
-            ],
-            {
-                duration: 500
-            }
-        );
-    }
-}
+//     updateContent(){
+//         this.el.textContent = `${Counter.value}/${this.counter.max}`
+//         this.animate();
+//     }
+
+//     private animate(): void{
+//         this.el.animate(
+//             [
+//                 { transform: 'scale(1.25)'},
+//                 { transform: 'scale(1.00)'}
+//             ],
+//             {
+//                 duration: 500
+//             }
+//         );
+//     }
+// }

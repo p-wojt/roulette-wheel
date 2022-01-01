@@ -1,65 +1,103 @@
-html {
-    font-family: 'Courier New', Courier, monospace;
-}
-input {
-    height: 1.5rem;
-    width: 15rem;
+body {
+  background-color: #121212;
+  color: snow;
+  transition-duration: 3s;
 }
 
-ul {
-    list-style-type: none;
-    padding: 0;
-    text-align: center;
+canvas{
+  margin-left: 5rem;
+  height: 50rem;
+}
+
+html {
+  font-family: "Courier New", Courier, monospace;
+}
+
+input {
+  height: 1.5rem;
+  width: 15rem;
 }
 
 li {
-    padding: 0.75rem;
+  padding: 0.75rem;
 }
 
-.open-close-menu{
-    display: flex;
-    justify-content: right;
+ul {
+  padding: 0;
+  list-style-type: none;
+  text-align: center;
 }
 
-.open-close-arrow {
-    width: 1rem;
-    height: 1rem;
+.add-item-button {
+  height: 2rem;
+  width: 15.5rem;
+  margin-top: 0.5rem;
 }
 
-.item-delete {
-    width: 1rem;
-    height: 1rem;
-    float: right;
-}
-
-.decreasing {
-    width: 0.1rem;
-    transition-duration: 3s;
-}
-
-.normal {
-    width: 20rem;
-    transition-duration: 3s;
-}
-
-.menu {
-    height: 100vh;
-    width: 20rem;
-}
-
-.new-item-button {
-    height: 2rem;
-    width: 10rem;
-    margin-top: 0.5rem;
-}
-
-#menu-item {
-    text-align: center;
+.close-arrow {
+  width: 1rem;
+  height: 1rem;
 }
 
 .counter {
-    font-size: 24px;
+  font-size: 24px;
+  text-align: center;
+}
+
+.light-dark-mode {
+  float: right;
+  padding: 1rem;
+}
+
+.remove-all-items-button {
+  width: 5.4rem;
+}
+
+.roulette-wheel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+
+.menu {
+  width: 24rem;
+}
+
+.menu-item-list {
     text-align: center;
 }
 
+.moon-sun {
+  width: 3rem;
+  height: 3rem;
+}
 
+
+.item-delete {
+  width: 1rem;
+  height: 1rem;
+  float: right;
+}
+
+.open-close-menu {
+  display: flex;
+  justify-content: right;
+}
+
+@media screen and (max-width: 940px) {
+  canvas{
+    margin-top: 5rem;
+    height: 30rem;
+    margin: auto;
+  }
+
+  .roulette-wheel {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    transform: translate(0, 0);
+  }
+}
