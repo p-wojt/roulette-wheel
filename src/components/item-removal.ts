@@ -10,8 +10,4 @@ export class ItemRemoval extends Component<HTMLImageElement>{
         el.id = `${id}-delete`
         super(el);
     }
-
-    configure(){
-        // TODO: make icon rotation after mouse over event
-    }
 }

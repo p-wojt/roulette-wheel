@@ -18,16 +18,6 @@ export class MenuItem extends Component<HTMLLIElement> {
         this.appearAnimation();
     }
 
-    // registerChangeColorListener(){
-    //     this.el.addEventListener('click', () => {
-    //         const actualColorIndex = avaliableRGBs.indexOf(this.el.style.backgroundColor);
-    //         if(actualColorIndex !== -1){
-    //             const color = avaliableRGBs[(actualColorIndex + 1) % avaliableRGBs.length];
-    //             this.el.style.backgroundColor = color;
-    //         }
-    //     });
-    // }
-
     appearAnimation(){
         this.el.animate(
             [{ transform: "scale(1.25)" }, { transform: "scale(1.00)" }],
