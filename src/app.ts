@@ -30,6 +30,12 @@ const canvasWrapper = document.getElementsByClassName(
 )[0]! as HTMLDivElement;
 
 const MAXIMUM_SIZE = 16;
+canvasEl.width = canvasWrapper.offsetWidth;
+canvasEl.height = canvasWrapper.offsetHeight;
+const x = canvasEl.width / 2;
+const y = canvasEl.height / 2;
+const radius = canvasEl.height / 2;
+const animationFPSRate = 30;
 
 counterEl.textContent = `0/${MAXIMUM_SIZE}`;
 
@@ -152,22 +158,23 @@ function lightDarkMode() {
   });
 }
 
+const arrowImage = document.createElement('img');
+arrowImage.src = 'static/arrow-down.png';
+arrowImage.alt = 'arrow';
+
 function drawRouletteWheel(angle: number) {
-  canvasEl.width = canvasWrapper.offsetWidth;
-  canvasEl.height = canvasWrapper.offsetHeight;
-  const x = canvasEl.width / 2;
-  const y = canvasEl.height / 2;
-  const radius = canvasEl.height / 2;
-  ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
+  const segmentWidth = 360 / items.length;
   let startAngle = angle;
+  let endAngle = segmentWidth + startAngle;
+  ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
   ctx.beginPath();
   ctx.arc(x, y, radius, 0, Math.PI * 2, true);
-  ctx.stroke();
-  const segmentWidth = 360 / items.length;
-  let endAngle = segmentWidth + startAngle;
+  // let xtemp = x + Math.cos(totalAngle/2) * radius/2;
+  // let ytemp = y + Math.sin(totalAngle/2) * radius/2;
   for (let i = 0; i < items.length; i++) {
     ctx.beginPath();
     ctx.lineTo(x, y)
+    ctx.font = 'bold 24px verdana, sans-serif';
     ctx.arc(
       x,
       y,
@@ -176,52 +183,56 @@ function drawRouletteWheel(angle: number) {
       (endAngle * Math.PI) / 180,
       false
     );
+    ctx.fillText(itemsList.items[i].name, x + Math.cos(segmentWidth * i ) * radius / 2, y + Math.sin(segmentWidth * i + angle) * radius / 2 );
     ctx.lineTo(x, y)
     ctx.fillStyle = itemsList.items[i].color;
     ctx.fill();
-    if (items.length !== 1) ctx.stroke();
+    if (items.length !== 1) {
+      ctx.stroke();
+    }
+    ctx.drawImage(arrowImage, x - 32, -32, 64, 64);
     startAngle += segmentWidth;
     endAngle += segmentWidth;
+    // xtemp += Math.cos(totalAngle/2) * radius/2;
+    // ytemp += Math.sin(totalAngle/2) * radius/2;
+    // console.log(ytemp);
   }
 }
 
-let angleSpeed = 1;
+
 
 
 let guessItemIndex = Math.floor(Math.random() * items.length);
 let segmentAngle = 360 / items.length;
-const rotations = 10;
+const rotations = 3;
 let maxAngle = 360 * rotations + segmentAngle * guessItemIndex;
-let delta = 0.2;
+let angleSpeed = 0;
 let totalAngle = 0;
-  let animationId: number | null;
+let animationId: number | null;
+let startAngle = 1;
+// const maxAngleSpeed = segmentAngle;
 
 function startRoulette(){
   if(animationId){
-    resetRouletteAnimation();
+    //resetRouletteAnimation();
   }else{
-    drawRouletteWheel(0);
     guessItemIndex = Math.floor(Math.random() * items.length);
-    segmentAngle = 360 / items.length;
-    console.log(itemsList.items[guessItemIndex].color);
-    maxAngle = 360 * rotations + segmentAngle * (guessItemIndex - 1) + segmentAngle * Math.random();
     console.log(guessItemIndex);
-    delta = 0.2
+    segmentAngle = 360 / items.length;
+    maxAngle = 360 * rotations + ((items.length - 1) - guessItemIndex) * segmentAngle + Math.random() * segmentAngle;
     beginAnimateRoulette();
   }
 }
 
-function beginAnimateRoulette(){;
-    drawRouletteWheel(angleSpeed);
+function beginAnimateRoulette(){
     if(totalAngle < maxAngle){
-      console.log(angleSpeed);
-      if(angleSpeed > maxAngle / 2){
-        delta = -delta;
-      }
-      angleSpeed += angleSpeed * delta;
-      totalAngle += angleSpeed;
-      console.log('TOTAL: ' + totalAngle);
-      animationId = window.requestAnimationFrame(beginAnimateRoulette);
+      drawRouletteWheel(angleSpeed);
+      angleSpeed += startAngle;
+      totalAngle += startAngle;
+      setTimeout(() => {
+        animationId = window.requestAnimationFrame(beginAnimateRoulette);
+      }, 1000 / animationFPSRate);
+      
     }else{
       window.cancelAnimationFrame(animationId!)
       animationId = null;
@@ -230,15 +241,15 @@ function beginAnimateRoulette(){;
     }
 }
 
-function resetRouletteAnimation(){
-  if(animationId){
-    window.cancelAnimationFrame(animationId!)
-  }
-  drawRouletteWheel(0);
-  animationId = null;
-  angleSpeed = 1;
-  totalAngle = 0;
-  delta = 0.2;
-}
+// function resetRouletteAnimation(){
+//   if(animationId){
+//     window.cancelAnimationFrame(animationId!)
+//   }
+//   drawRouletteWheel(0);
+//   animationId = null;
+//   angleSpeed = 1;
+//   totalAngle = 0;
+//   delta = 0.2;
+// }
 
 canvasEl.addEventListener('click', startRoulette);
