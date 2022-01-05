@@ -28,13 +28,14 @@ const modeEl = lightDarkModeEl.querySelector("img")! as HTMLImageElement;
 const canvasWrapper = document.getElementsByClassName(
   "roulette-wheel"
 )[0]! as HTMLDivElement;
+const winnerEl = document.getElementsByClassName('winner')[0]! as HTMLDivElement;
 
 const MAXIMUM_SIZE = 16;
 canvasEl.width = canvasWrapper.offsetWidth;
 canvasEl.height = canvasWrapper.offsetHeight;
 const x = canvasEl.width / 2;
 const y = canvasEl.height / 2;
-const radius = canvasEl.height / 2;
+const radius = canvasEl.height / 2 - 5;
 const animationFPSRate = 30;
 
 counterEl.textContent = `0/${MAXIMUM_SIZE}`;
@@ -158,9 +159,9 @@ function lightDarkMode() {
   });
 }
 
-const arrowImage = document.createElement('img');
-arrowImage.src = 'static/arrow-down.png';
-arrowImage.alt = 'arrow';
+const arrowImage = document.createElement("img");
+arrowImage.src = "static/arrow-down.png";
+arrowImage.alt = "arrow";
 
 function drawRouletteWheel(angle: number) {
   const segmentWidth = 360 / items.length;
@@ -168,13 +169,23 @@ function drawRouletteWheel(angle: number) {
   let endAngle = segmentWidth + startAngle;
   ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
   ctx.beginPath();
-  ctx.arc(x, y, radius, 0, Math.PI * 2, true);
   // let xtemp = x + Math.cos(totalAngle/2) * radius/2;
   // let ytemp = y + Math.sin(totalAngle/2) * radius/2;
+  ctx.save();
+  ctx.translate(x + radius + 50, y);
+  ctx.lineTo(0, -20);
+  ctx.lineTo(0, 20);
+  ctx.lineTo(-50, 0);
+  ctx.fillStyle = 'white';
+  ctx.fill();
+  ctx.stroke();
+  ctx.restore();
+  ctx.arc(x, y, radius, 0, Math.PI * 2, true);
+  ctx.stroke();
   for (let i = 0; i < items.length; i++) {
     ctx.beginPath();
-    ctx.lineTo(x, y)
-    ctx.font = 'bold 24px verdana, sans-serif';
+    ctx.lineTo(x, y);
+    ctx.font = "bold 24px verdana, sans-serif";
     ctx.arc(
       x,
       y,
@@ -183,14 +194,33 @@ function drawRouletteWheel(angle: number) {
       (endAngle * Math.PI) / 180,
       false
     );
-    ctx.fillText(itemsList.items[i].name, x + Math.cos(segmentWidth * i ) * radius / 2, y + Math.sin(segmentWidth * i + angle) * radius / 2 );
-    ctx.lineTo(x, y)
+    ctx.lineTo(x, y);
     ctx.fillStyle = itemsList.items[i].color;
     ctx.fill();
+    ctx.save();
+    ctx.fillStyle = "black";
+    const text = itemsList.items[i].name;
+    if (items.length > 1) {
+      const xT =
+        x +
+        (Math.cos((startAngle + segmentWidth / 2) * Math.PI / 180) * radius) /
+          2;
+      const xY =
+        y +
+        (Math.sin((startAngle + segmentWidth / 2) * Math.PI / 180) * radius) /
+          2;
+      ctx.translate(xT, xY);
+      console.log(totalAngle);
+      ctx.rotate(Math.PI / items.length + Math.PI/180 * startAngle);
+      ctx.fillText(text, -ctx.measureText(text).width / 2, 0);
+
+    }else{
+      ctx.fillText(text, x, y);
+    }
+    ctx.restore();
     if (items.length !== 1) {
       ctx.stroke();
     }
-    ctx.drawImage(arrowImage, x - 32, -32, 64, 64);
     startAngle += segmentWidth;
     endAngle += segmentWidth;
     // xtemp += Math.cos(totalAngle/2) * radius/2;
@@ -199,46 +229,46 @@ function drawRouletteWheel(angle: number) {
   }
 }
 
-
-
-
 let guessItemIndex = Math.floor(Math.random() * items.length);
 let segmentAngle = 360 / items.length;
-const rotations = 3;
+const rotations = 1;
 let maxAngle = 360 * rotations + segmentAngle * guessItemIndex;
 let angleSpeed = 0;
 let totalAngle = 0;
 let animationId: number | null;
-let startAngle = 1;
+let startAngle = 2;
 // const maxAngleSpeed = segmentAngle;
 
-function startRoulette(){
-  if(animationId){
+function startRoulette() {
+  if (animationId) {
     //resetRouletteAnimation();
-  }else{
+  } else {
     guessItemIndex = Math.floor(Math.random() * items.length);
     console.log(guessItemIndex);
     segmentAngle = 360 / items.length;
-    maxAngle = 360 * rotations + ((items.length - 1) - guessItemIndex) * segmentAngle + Math.random() * segmentAngle;
+    maxAngle =
+      360 * rotations +
+      (items.length - 1 - guessItemIndex) * segmentAngle +
+      Math.random() * segmentAngle;
     beginAnimateRoulette();
   }
 }
 
-function beginAnimateRoulette(){
-    if(totalAngle < maxAngle){
-      drawRouletteWheel(angleSpeed);
-      angleSpeed += startAngle;
-      totalAngle += startAngle;
-      setTimeout(() => {
-        animationId = window.requestAnimationFrame(beginAnimateRoulette);
-      }, 1000 / animationFPSRate);
-      
-    }else{
-      window.cancelAnimationFrame(animationId!)
-      animationId = null;
-      angleSpeed = 1;
-      totalAngle = 0;
-    }
+function beginAnimateRoulette() {
+  if (totalAngle < maxAngle) {
+    drawRouletteWheel(angleSpeed);
+    angleSpeed += startAngle;
+    totalAngle += startAngle;
+    setTimeout(() => {
+      animationId = window.requestAnimationFrame(beginAnimateRoulette);
+    }, 1000 / animationFPSRate);
+  } else {
+    window.cancelAnimationFrame(animationId!);
+    animationId = null;
+    angleSpeed = 1;
+    totalAngle = 0;
+    winnerEl.textContent = `Winner: ${itemsList.items[guessItemIndex].name}`;
+  }
 }
 
 // function resetRouletteAnimation(){
@@ -252,4 +282,4 @@ function beginAnimateRoulette(){
 //   delta = 0.2;
 // }
 
-canvasEl.addEventListener('click', startRoulette);
+canvasEl.addEventListener("click", startRoulette);

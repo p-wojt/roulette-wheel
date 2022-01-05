@@ -5,7 +5,6 @@ body {
 }
 
 canvas{
-  margin-left: 5rem;
   height: 50rem;
 }
 
@@ -44,21 +43,15 @@ ul {
   text-align: center;
 }
 
+.item-delete {
+  width: 1rem;
+  height: 1rem;
+  float: right;
+}
+
 .light-dark-mode {
   float: right;
   padding: 1rem;
-}
-
-.remove-all-items-button {
-  width: 5.4rem;
-}
-
-.roulette-wheel {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: -1;
 }
 
 .menu {
@@ -74,16 +67,28 @@ ul {
   height: 3rem;
 }
 
+.remove-all-items-button {
+  width: 5.4rem;
+}
 
-.item-delete {
-  width: 1rem;
-  height: 1rem;
-  float: right;
+.roulette-wheel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  margin-left: 5rem;
+  text-align: center;
 }
 
 .open-close-menu {
   display: flex;
   justify-content: right;
+}
+
+.winner {
+  font-size: 32;
+  margin-bottom: 1rem;
 }
 
 @media screen and (max-width: 940px) {
