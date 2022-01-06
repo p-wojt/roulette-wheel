@@ -1,6 +1,6 @@
 body {
   background-color: #121212;
-  color: snow;
+  color: #FAF9F6;
   transition-duration: 3s;
 }
 
@@ -31,6 +31,20 @@ ul {
   height: 2rem;
   width: 15.5rem;
   margin-top: 0.5rem;
+  background-color: #6495ED;
+  border: 0.05rem solid black;
+  box-shadow: 0 0.7rem 0 -0.1rem #6082B6, 0 0.75rem 0 -0.05rem black;
+  border-radius: 0.5rem;
+}
+
+.add-item-button:hover {
+  transform: translate(0, 0.25rem);
+  box-shadow: 0 0.5rem 0 -0.1rem #6082B6, 0 0.55rem 0 -0.05rem black;
+}
+
+.add-item-button:active {
+  transform: translate(0, 0.5rem);
+  box-shadow: 0 0.1rem 0 -0.1rem #6082B6, 0 0.15rem 0 -0.05rem black;
 }
 
 .close-arrow {
@@ -69,6 +83,21 @@ ul {
 
 .remove-all-items-button {
   width: 5.4rem;
+  height: 2rem;
+  background-color: #6495ED;
+  border: 0.05rem solid black;
+  box-shadow: 0 0.7rem 0 -0.1rem #6082B6, 0 0.75rem 0 -0.05rem black;
+  border-radius: 0.5rem;
+}
+
+.remove-all-items-button:hover {
+  transform: translate(0, 0.25rem);
+  box-shadow: 0 0.5rem 0 -0.1rem #6082B6, 0 0.55rem 0 -0.05rem black;
+}
+
+.remove-all-items-button:active {
+  transform: translate(0, 0.5rem);
+  box-shadow: 0 0.1rem 0 -0.1rem #6082B6, 0 0.15rem 0 -0.05rem black;
 }
 
 .roulette-wheel {
@@ -76,7 +105,6 @@ ul {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: -1;
   margin-left: 5rem;
   text-align: center;
 }
@@ -89,6 +117,7 @@ ul {
 .winner {
   font-size: 32;
   margin-bottom: 1rem;
+  height: 28px;
 }
 
 @media screen and (max-width: 940px) {

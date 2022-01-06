@@ -28,24 +28,32 @@ const modeEl = lightDarkModeEl.querySelector("img")! as HTMLImageElement;
 const canvasWrapper = document.getElementsByClassName(
   "roulette-wheel"
 )[0]! as HTMLDivElement;
-const winnerEl = document.getElementsByClassName('winner')[0]! as HTMLDivElement;
+const winnerEl = document.getElementsByClassName(
+  "winner"
+)[0]! as HTMLDivElement;
 
-const MAXIMUM_SIZE = 16;
 canvasEl.width = canvasWrapper.offsetWidth;
 canvasEl.height = canvasWrapper.offsetHeight;
-const x = canvasEl.width / 2;
-const y = canvasEl.height / 2;
-const radius = canvasEl.height / 2 - 5;
-const animationFPSRate = 30;
 
-counterEl.textContent = `0/${MAXIMUM_SIZE}`;
+const MAXIMUM_SIZE = 16;
+const ROTATIONS = 20;
+const ANIMATION_FPS = 60;
+const WHEEL_OFFSET = 5;
+const X_CENTER = canvasEl.width / 2;
+const Y_CENTER = canvasEl.height / 2;
+const RADIUS = canvasEl.height / 2 - WHEEL_OFFSET;
 
 const itemsList = new ItemList(MAXIMUM_SIZE);
 const items: MenuItem[] = [];
 
+let rotate_by = 50;
+
 configure();
 
 function configure() {
+  counterEl.textContent = `0/${MAXIMUM_SIZE}`;
+  winnerEl.style.fontSize = "32px";
+
   LightDarkMode.currentMode = "dark";
   IdPool.initializeIdsPool(MAXIMUM_SIZE);
   addRemoveItem();
@@ -53,46 +61,47 @@ function configure() {
   removeAllItems();
   lightDarkMode();
   drawRouletteWheel(0);
+
+  canvasEl.addEventListener("click", startRoulette);
 }
 
 function addRemoveItem() {
   addButtonEl.addEventListener("click", () => {
     const name = inputEl.value;
-    const id = IdPool.getAnId();
-    if (name && id) {
-      const color = avaliableRGBs[id % avaliableRGBs.length];
+    if (name) {
+      const id = IdPool.getAnId();
+      if (id) {
+        const color = avaliableRGBs[id % avaliableRGBs.length];
+        const item = new Item(id, name, color);
+        const menuItem = new MenuItem(id, name, color);
 
-      const item = new Item(id, name, color);
-      const menuItem = new MenuItem(id, name, color);
+        menuItem.deleteItem.el.addEventListener("click", () => {
+          menuItem.el.remove();
+          items.splice(items.indexOf(menuItem), 1);
+          itemsList.remove(item);
+          IdPool.addId(item.id);
+          updateCounter();
+          drawRouletteWheel(0);
+        });
 
-      menuItem.deleteItem.el.addEventListener("click", () => {
-        menuItem.el.remove();
-        items.splice(items.indexOf(menuItem), 1);
-        itemsList.remove(item);
-        IdPool.addId(item.id);
+        registerChangeColorByClick(item, menuItem);
+
+        itemsList.add(item);
+        items.push(menuItem);
+        itemListEl.appendChild(menuItem.el);
         updateCounter();
+        guessItemIndex = Math.floor(Math.random() * items.length);
+        segmentAngle = 360 / items.length;
+        maxAngle = 360 * ROTATIONS + segmentAngle * guessItemIndex;
         drawRouletteWheel(0);
-      });
-
-      registerChangeColorByClick(item, menuItem);
-
-      itemsList.add(item);
-      items.push(menuItem);
-      itemListEl.appendChild(menuItem.el);
-      updateCounter();
-      guessItemIndex = Math.floor(Math.random() * items.length);
-      maxAngle = 360 * rotations + segmentAngle * guessItemIndex;
-      segmentAngle = 360 / items.length;
-      drawRouletteWheel(0);
+      }
     }
   });
 }
 
 function addItemByEnter() {
   bodyEl.addEventListener("keyup", (event: KeyboardEvent) => {
-    if (event.key !== "Enter") {
-      return;
-    }
+    if (event.key !== "Enter") return;
     addButtonEl.click();
   });
 }
@@ -107,7 +116,7 @@ function registerChangeColorByClick(item: Item, menuItem: MenuItem) {
         avaliableRGBs[(actualColorIndex + 1) % avaliableRGBs.length];
       menuItem.el.style.backgroundColor = color;
       item.color = color;
-      drawRouletteWheel(0);
+      if (!animationId) drawRouletteWheel(0);
     }
   });
 }
@@ -132,10 +141,24 @@ function updateCounter() {
 
 function animateCounter() {
   counterEl.animate(
-    [{ transform: "scale(1.25)" }, { transform: "scale(1.00)" }],
+    [
+      { transform: "scale(1.5)" },
+      { transform: "scale(1.00)" },
+      { transform: "" },
+    ],
     {
       duration: 500,
     }
+  );
+}
+
+function animateWinner() {
+  winnerEl.animate(
+    {
+      opacity: [0.5, 1],
+      easing: ["ease-in", "ease-out"],
+    },
+    1000
   );
 }
 
@@ -147,21 +170,16 @@ function lightDarkMode() {
 
     if (LightDarkMode.currentMode == "dark") {
       modeEl.src = "static/sun.png";
-      bodyEl.style.backgroundColor = "snow";
+      bodyEl.style.backgroundColor = "#FAF9F6";
       bodyEl.style.color = "black";
     } else {
       modeEl.src = "static/moon.png";
       bodyEl.style.backgroundColor = "#121212";
       bodyEl.style.color = "white";
     }
-
     LightDarkMode.changeMode();
   });
 }
-
-const arrowImage = document.createElement("img");
-arrowImage.src = "static/arrow-down.png";
-arrowImage.alt = "arrow";
 
 function drawRouletteWheel(angle: number) {
   const segmentWidth = 360 / items.length;
@@ -169,53 +187,44 @@ function drawRouletteWheel(angle: number) {
   let endAngle = segmentWidth + startAngle;
   ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
   ctx.beginPath();
-  // let xtemp = x + Math.cos(totalAngle/2) * radius/2;
-  // let ytemp = y + Math.sin(totalAngle/2) * radius/2;
   ctx.save();
-  ctx.translate(x + radius + 50, y);
+  ctx.translate(X_CENTER + RADIUS + 50, Y_CENTER);
   ctx.lineTo(0, -20);
   ctx.lineTo(0, 20);
   ctx.lineTo(-50, 0);
-  ctx.fillStyle = 'white';
+  ctx.fillStyle = "#C4B454";
   ctx.fill();
   ctx.stroke();
   ctx.restore();
-  ctx.arc(x, y, radius, 0, Math.PI * 2, true);
+  ctx.arc(X_CENTER, Y_CENTER, RADIUS, 0, Math.PI * 2, true);
   ctx.stroke();
   for (let i = 0; i < items.length; i++) {
     ctx.beginPath();
-    ctx.lineTo(x, y);
+    ctx.lineTo(X_CENTER, Y_CENTER);
     ctx.font = "bold 24px verdana, sans-serif";
     ctx.arc(
-      x,
-      y,
-      radius,
+      X_CENTER,
+      Y_CENTER,
+      RADIUS,
       (startAngle * Math.PI) / 180,
       (endAngle * Math.PI) / 180,
       false
     );
-    ctx.lineTo(x, y);
+    ctx.lineTo(X_CENTER, Y_CENTER);
     ctx.fillStyle = itemsList.items[i].color;
     ctx.fill();
     ctx.save();
     ctx.fillStyle = "black";
     const text = itemsList.items[i].name;
     if (items.length > 1) {
-      const xT =
-        x +
-        (Math.cos((startAngle + segmentWidth / 2) * Math.PI / 180) * radius) /
-          2;
-      const xY =
-        y +
-        (Math.sin((startAngle + segmentWidth / 2) * Math.PI / 180) * radius) /
-          2;
+      const angleVal = ((startAngle + segmentWidth / 2) * Math.PI) / 180;
+      const xT = X_CENTER + (Math.cos(angleVal) * RADIUS) / 2;
+      const xY = Y_CENTER + (Math.sin(angleVal) * RADIUS) / 2;
       ctx.translate(xT, xY);
-      console.log(totalAngle);
-      ctx.rotate(Math.PI / items.length + Math.PI/180 * startAngle);
+      ctx.rotate(Math.PI / items.length + (Math.PI / 180) * startAngle);
       ctx.fillText(text, -ctx.measureText(text).width / 2, 0);
-
-    }else{
-      ctx.fillText(text, x, y);
+    } else {
+      ctx.fillText(text, X_CENTER, Y_CENTER);
     }
     ctx.restore();
     if (items.length !== 1) {
@@ -223,63 +232,62 @@ function drawRouletteWheel(angle: number) {
     }
     startAngle += segmentWidth;
     endAngle += segmentWidth;
-    // xtemp += Math.cos(totalAngle/2) * radius/2;
-    // ytemp += Math.sin(totalAngle/2) * radius/2;
-    // console.log(ytemp);
   }
 }
 
 let guessItemIndex = Math.floor(Math.random() * items.length);
 let segmentAngle = 360 / items.length;
-const rotations = 1;
-let maxAngle = 360 * rotations + segmentAngle * guessItemIndex;
-let angleSpeed = 0;
-let totalAngle = 0;
+let maxAngle = 360 * ROTATIONS + segmentAngle * guessItemIndex;
 let animationId: number | null;
-let startAngle = 2;
-// const maxAngleSpeed = segmentAngle;
+let winner: string;
+let endTime: number;
 
-function startRoulette() {
-  if (animationId) {
-    //resetRouletteAnimation();
-  } else {
-    guessItemIndex = Math.floor(Math.random() * items.length);
-    console.log(guessItemIndex);
-    segmentAngle = 360 / items.length;
-    maxAngle =
-      360 * rotations +
-      (items.length - 1 - guessItemIndex) * segmentAngle +
-      Math.random() * segmentAngle;
-    beginAnimateRoulette();
-  }
+function easeOut(
+  time: number,
+  beginningVal: number,
+  toChange: number,
+  duration: number
+) {
+  return time == duration
+    ? beginningVal + toChange
+    : toChange * (-Math.pow(2, (-10 * time) / duration) + 1) + beginningVal;
 }
 
+function startRoulette() {
+  if (!animationId) {
+    if (winner) {
+      winner = "";
+      winnerEl.textContent = "";
+      drawRouletteWheel(0);
+    } else {
+      guessItemIndex = Math.floor(Math.random() * items.length);
+      winner = itemsList.items[guessItemIndex].name;
+      segmentAngle = 360 / items.length;
+      totalTime = 0;
+      maxAngle =
+        360 * ROTATIONS +
+        (items.length - 1 - guessItemIndex) * segmentAngle +
+        Math.random() * segmentAngle;
+      console.log(maxAngle);
+      endTime = (maxAngle / rotate_by) * (1000 / ANIMATION_FPS);
+      console.log(endTime);
+      beginAnimateRoulette();
+    }
+  }
+}
+let totalTime = 0;
 function beginAnimateRoulette() {
-  if (totalAngle < maxAngle) {
-    drawRouletteWheel(angleSpeed);
-    angleSpeed += startAngle;
-    totalAngle += startAngle;
+  //TODO: animations doesn't work as expected (endTime too low or totalTime incrementing faster than expected)
+  if (totalTime < endTime) {
+    drawRouletteWheel(easeOut(totalTime, 0, maxAngle, endTime));
     setTimeout(() => {
       animationId = window.requestAnimationFrame(beginAnimateRoulette);
-    }, 1000 / animationFPSRate);
+      totalTime += 1000 / ANIMATION_FPS;
+    }, 1000 / ANIMATION_FPS);
   } else {
     window.cancelAnimationFrame(animationId!);
     animationId = null;
-    angleSpeed = 1;
-    totalAngle = 0;
-    winnerEl.textContent = `Winner: ${itemsList.items[guessItemIndex].name}`;
+    winnerEl.textContent = `Winner: ${winner}`;
+    animateWinner();
   }
 }
-
-// function resetRouletteAnimation(){
-//   if(animationId){
-//     window.cancelAnimationFrame(animationId!)
-//   }
-//   drawRouletteWheel(0);
-//   animationId = null;
-//   angleSpeed = 1;
-//   totalAngle = 0;
-//   delta = 0.2;
-// }
-
-canvasEl.addEventListener("click", startRoulette);
