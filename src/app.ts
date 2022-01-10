@@ -268,21 +268,21 @@ function startRoulette() {
         360 * ROTATIONS +
         (items.length - 1 - guessItemIndex) * segmentAngle +
         Math.random() * segmentAngle;
-      console.log(maxAngle);
       endTime = (maxAngle / rotate_by) * (1000 / ANIMATION_FPS);
-      console.log(endTime);
       beginAnimateRoulette();
     }
   }
 }
+
+
 let totalTime = 0;
 function beginAnimateRoulette() {
-  //TODO: animations doesn't work as expected (endTime too low or totalTime incrementing faster than expected)
-  if (totalTime < endTime) {
-    drawRouletteWheel(easeOut(totalTime, 0, maxAngle, endTime));
+  const angle = easeOut(totalTime, 0, maxAngle, endTime);
+  if (totalTime < endTime || maxAngle - angle > 0.1) {
     setTimeout(() => {
-      animationId = window.requestAnimationFrame(beginAnimateRoulette);
+      drawRouletteWheel(angle);
       totalTime += 1000 / ANIMATION_FPS;
+      animationId = window.requestAnimationFrame(beginAnimateRoulette);
     }, 1000 / ANIMATION_FPS);
   } else {
     window.cancelAnimationFrame(animationId!);

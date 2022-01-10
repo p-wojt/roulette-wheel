@@ -128,6 +128,10 @@ ul {
     margin: auto;
   }
 
+  .menu{
+    width: 23.5rem;
+  }
+
   .roulette-wheel {
     position: relative;
     top: 0;
