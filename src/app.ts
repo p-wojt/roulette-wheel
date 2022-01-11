@@ -291,3 +291,9 @@ function beginAnimateRoulette() {
     animateWinner();
   }
 }
+
+const footerEl = document.querySelector('footer')!;
+const authorsEl = document.getElementsByClassName('icons-authors')[0]! as HTMLDivElement;
+footerEl.addEventListener('click', () => {
+  authorsEl.hidden = !authorsEl.hidden;
+});

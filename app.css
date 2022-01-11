@@ -4,8 +4,25 @@ body {
   transition-duration: 3s;
 }
 
+button{
+  cursor: pointer;
+}
+
 canvas{
   height: 50rem;
+  cursor: pointer;
+}
+
+footer {
+  position: absolute;
+  padding: 1rem;
+  bottom: 0;
+  right: 0;
+}
+
+footer p {
+  text-align: right;
+  cursor: pointer;
 }
 
 html {
@@ -19,6 +36,7 @@ input {
 
 li {
   padding: 0.75rem;
+  cursor: pointer;
 }
 
 ul {
@@ -26,6 +44,7 @@ ul {
   list-style-type: none;
   text-align: center;
 }
+
 
 .add-item-button {
   height: 2rem;
@@ -45,11 +64,6 @@ ul {
 .add-item-button:active {
   transform: translate(0, 0.5rem);
   box-shadow: 0 0.1rem 0 -0.1rem #6082B6, 0 0.15rem 0 -0.05rem black;
-}
-
-.close-arrow {
-  width: 1rem;
-  height: 1rem;
 }
 
 .counter {
@@ -105,7 +119,6 @@ ul {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  margin-left: 5rem;
   width: 60rem;
   text-align: center;
 }
@@ -139,5 +152,9 @@ ul {
     width: 100%;
     transform: translate(0, 0);
     margin: 0;
+  }
+
+  footer {
+    position: relative;
   }
 }
