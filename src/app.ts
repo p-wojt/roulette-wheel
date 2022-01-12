@@ -22,15 +22,20 @@ const lightDarkModeEl = document.getElementsByClassName(
   "light-dark-mode"
 )[0]! as HTMLDivElement;
 const canvasEl = document.querySelector("canvas")! as HTMLCanvasElement;
-const ctx = canvasEl.getContext("2d")!;
 const bodyEl = document.querySelector("body")! as HTMLBodyElement;
 const modeEl = lightDarkModeEl.querySelector("img")! as HTMLImageElement;
-const canvasWrapper = document.getElementsByClassName(
-  "roulette-wheel"
-)[0]! as HTMLDivElement;
 const winnerEl = document.getElementsByClassName(
   "winner"
 )[0]! as HTMLDivElement;
+const footerEl = document.querySelector("footer")!;
+const authorsEl = document.getElementsByClassName(
+  "icons-authors"
+)[0]! as HTMLDivElement;
+const canvasWrapper = document.getElementsByClassName(
+  "roulette-wheel"
+)[0]! as HTMLDivElement;
+
+const ctx = canvasEl.getContext("2d")!;
 
 canvasEl.width = canvasWrapper.offsetWidth;
 canvasEl.height = canvasWrapper.offsetHeight;
@@ -47,12 +52,12 @@ const itemsList = new ItemList(MAXIMUM_SIZE);
 const items: MenuItem[] = [];
 
 let rotate_by = 50;
+let totalTime = 0;
 
 configure();
 
 function configure() {
   counterEl.textContent = `0/${MAXIMUM_SIZE}`;
-  winnerEl.style.fontSize = "32px";
 
   LightDarkMode.currentMode = "dark";
   IdPool.initializeIdsPool(MAXIMUM_SIZE);
@@ -63,37 +68,47 @@ function configure() {
   drawRouletteWheel(0);
 
   canvasEl.addEventListener("click", startRoulette);
+  footerEl.addEventListener("click", () => {
+    authorsEl.hidden = !authorsEl.hidden;
+  });
 }
+
 
 function addRemoveItem() {
   addButtonEl.addEventListener("click", () => {
-    const name = inputEl.value;
-    if (name) {
-      const id = IdPool.getAnId();
-      if (id) {
-        const color = avaliableRGBs[id % avaliableRGBs.length];
-        const item = new Item(id, name, color);
-        const menuItem = new MenuItem(id, name, color);
+    if (!animationId) {
+      clearWinner();
+      const name = inputEl.value;
+      if (name) {
+        const id = IdPool.getAnId();
+        if (id) {
+          const color = avaliableRGBs[id % avaliableRGBs.length];
+          const item = new Item(id, name, color);
+          const menuItem = new MenuItem(id, name, color);
 
-        menuItem.deleteItem.el.addEventListener("click", () => {
-          menuItem.el.remove();
-          items.splice(items.indexOf(menuItem), 1);
-          itemsList.remove(item);
-          IdPool.addId(item.id);
+          menuItem.deleteItem.el.addEventListener("click", () => {
+            if (!animationId) {
+              clearWinner();
+              menuItem.el.remove();
+              items.splice(items.indexOf(menuItem), 1);
+              itemsList.remove(item);
+              IdPool.addId(item.id);
+              updateCounter();
+              drawRouletteWheel(0);
+            }
+          });
+
+          registerChangeColorByClick(item, menuItem);
+
+          itemsList.add(item);
+          items.push(menuItem);
+          itemListEl.appendChild(menuItem.el);
           updateCounter();
+          guessItemIndex = Math.floor(Math.random() * items.length);
+          segmentAngle = 360 / items.length;
+          maxAngle = 360 * ROTATIONS + segmentAngle * guessItemIndex;
           drawRouletteWheel(0);
-        });
-
-        registerChangeColorByClick(item, menuItem);
-
-        itemsList.add(item);
-        items.push(menuItem);
-        itemListEl.appendChild(menuItem.el);
-        updateCounter();
-        guessItemIndex = Math.floor(Math.random() * items.length);
-        segmentAngle = 360 / items.length;
-        maxAngle = 360 * ROTATIONS + segmentAngle * guessItemIndex;
-        drawRouletteWheel(0);
+        }
       }
     }
   });
@@ -108,31 +123,58 @@ function addItemByEnter() {
 
 function registerChangeColorByClick(item: Item, menuItem: MenuItem) {
   menuItem.el.addEventListener("click", () => {
-    const actualColorIndex = avaliableRGBs.indexOf(
-      menuItem.el.style.backgroundColor
-    );
-    if (actualColorIndex !== -1) {
-      const color =
-        avaliableRGBs[(actualColorIndex + 1) % avaliableRGBs.length];
-      menuItem.el.style.backgroundColor = color;
-      item.color = color;
-      if (!animationId) drawRouletteWheel(0);
+    if (!animationId) {
+      const actualColorIndex = avaliableRGBs.indexOf(
+        menuItem.el.style.backgroundColor
+      );
+      if (actualColorIndex !== -1) {
+        const color =
+          avaliableRGBs[(actualColorIndex + 1) % avaliableRGBs.length];
+        menuItem.el.style.backgroundColor = color;
+        item.color = color;
+        drawRouletteWheel(0);
+      }
     }
   });
 }
 
 function removeAllItems() {
   removeAllItemsButtonEl.addEventListener("click", () => {
-    if (items.length > 0) {
-      items.forEach((menuItem) => menuItem.el.remove());
-      items.length = 0;
-      itemsList.clear();
-      IdPool.initializeIdsPool(MAXIMUM_SIZE);
-      updateCounter();
-      drawRouletteWheel(0);
+    if (!animationId) {
+      clearWinner();
+      if (items.length > 0) {
+        items.forEach((menuItem) => menuItem.el.remove());
+        items.length = 0;
+        itemsList.clear();
+        IdPool.initializeIdsPool(MAXIMUM_SIZE);
+        updateCounter();
+        drawRouletteWheel(0);
+      }
     }
   });
 }
+
+
+function lightDarkMode() {
+  lightDarkModeEl.addEventListener("click", () => {
+    modeEl.animate([{ transform: "rotate(360deg)" }], {
+      duration: 500,
+    });
+
+    if (LightDarkMode.currentMode == "dark") {
+      modeEl.src = "static/sun.png";
+      bodyEl.style.backgroundColor = "#FAF9F6";
+      bodyEl.style.color = "black";
+      LightDarkMode.currentMode = "light";
+    } else {
+      modeEl.src = "static/moon.png";
+      bodyEl.style.backgroundColor = "#121212";
+      bodyEl.style.color = "white";
+      LightDarkMode.currentMode = "dark";
+    }
+  });
+}
+
 
 function updateCounter() {
   counterEl.textContent = `${itemsList.items.length}/${MAXIMUM_SIZE}`;
@@ -141,11 +183,7 @@ function updateCounter() {
 
 function animateCounter() {
   counterEl.animate(
-    [
-      { transform: "scale(1.5)" },
-      { transform: "scale(1.00)" },
-      { transform: "" },
-    ],
+    [{ transform: "scale(1.5)" }, { transform: "scale(1.00)" }],
     {
       duration: 500,
     }
@@ -160,25 +198,6 @@ function animateWinner() {
     },
     1000
   );
-}
-
-function lightDarkMode() {
-  lightDarkModeEl.addEventListener("click", () => {
-    modeEl.animate([{ transform: "rotate(360deg)" }], {
-      duration: 500,
-    });
-
-    if (LightDarkMode.currentMode == "dark") {
-      modeEl.src = "static/sun.png";
-      bodyEl.style.backgroundColor = "#FAF9F6";
-      bodyEl.style.color = "black";
-    } else {
-      modeEl.src = "static/moon.png";
-      bodyEl.style.backgroundColor = "#121212";
-      bodyEl.style.color = "white";
-    }
-    LightDarkMode.changeMode();
-  });
 }
 
 function drawRouletteWheel(angle: number) {
@@ -242,24 +261,14 @@ let animationId: number | null;
 let winner: string;
 let endTime: number;
 
-function easeOut(
-  time: number,
-  beginningVal: number,
-  toChange: number,
-  duration: number
-) {
-  return time == duration
-    ? beginningVal + toChange
-    : toChange * (-Math.pow(2, (-10 * time) / duration) + 1) + beginningVal;
-}
-
 function startRoulette() {
   if (!animationId) {
-    if (winner) {
-      winner = "";
-      winnerEl.textContent = "";
+    const winnerCleared = clearWinner();
+    if (winnerCleared) {
       drawRouletteWheel(0);
     } else {
+      addButtonEl.style.background = "#C0C0C0";
+      removeAllItemsButtonEl.style.background = "#C0C0C0";
       guessItemIndex = Math.floor(Math.random() * items.length);
       winner = itemsList.items[guessItemIndex].name;
       segmentAngle = 360 / items.length;
@@ -274,8 +283,15 @@ function startRoulette() {
   }
 }
 
+function clearWinner() {
+  if (winner) {
+    winner = "";
+    winnerEl.textContent = "";
+    return true;
+  }
+  return false;
+}
 
-let totalTime = 0;
 function beginAnimateRoulette() {
   const angle = easeOut(totalTime, 0, maxAngle, endTime);
   if (totalTime < endTime || maxAngle - angle > 0.1) {
@@ -288,12 +304,20 @@ function beginAnimateRoulette() {
     window.cancelAnimationFrame(animationId!);
     animationId = null;
     winnerEl.textContent = `Winner: ${winner}`;
+    addButtonEl.style.background = "#6082B6";
+    removeAllItemsButtonEl.style.background = "#6082B6";
     animateWinner();
   }
 }
 
-const footerEl = document.querySelector('footer')!;
-const authorsEl = document.getElementsByClassName('icons-authors')[0]! as HTMLDivElement;
-footerEl.addEventListener('click', () => {
-  authorsEl.hidden = !authorsEl.hidden;
-});
+
+function easeOut(
+  time: number,
+  beginningVal: number,
+  toChange: number,
+  duration: number
+) {
+  return time == duration
+    ? beginningVal + toChange
+    : toChange * (-Math.pow(2, (-10 * time) / duration) + 1) + beginningVal;
+}

@@ -16,7 +16,7 @@ export abstract class IdPool {
     return id;
   }
 
-  static addId(id: number){
+  static addId(id: number) {
     this.avaliableIds.push(id);
   }
 }

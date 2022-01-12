@@ -1,14 +1,14 @@
 body {
   background-color: #121212;
-  color: #FAF9F6;
+  color: #faf9f6;
   transition-duration: 3s;
 }
 
-button{
+button {
   cursor: pointer;
 }
 
-canvas{
+canvas {
   height: 50rem;
   cursor: pointer;
 }
@@ -45,25 +45,24 @@ ul {
   text-align: center;
 }
 
-
 .add-item-button {
   height: 2rem;
   width: 15.5rem;
   margin-top: 0.5rem;
-  background-color: #6495ED;
+  background-color: #6495ed;
   border: 0.05rem solid black;
-  box-shadow: 0 0.7rem 0 -0.1rem #6082B6, 0 0.75rem 0 -0.05rem black;
+  box-shadow: 0 0.7rem 0 -0.1rem #6082b6, 0 0.75rem 0 -0.05rem black;
   border-radius: 0.5rem;
 }
 
 .add-item-button:hover {
   transform: translate(0, 0.25rem);
-  box-shadow: 0 0.5rem 0 -0.1rem #6082B6, 0 0.55rem 0 -0.05rem black;
+  box-shadow: 0 0.5rem 0 -0.1rem #6082b6, 0 0.55rem 0 -0.05rem black;
 }
 
 .add-item-button:active {
   transform: translate(0, 0.5rem);
-  box-shadow: 0 0.1rem 0 -0.1rem #6082B6, 0 0.15rem 0 -0.05rem black;
+  box-shadow: 0 0.1rem 0 -0.1rem #6082b6, 0 0.15rem 0 -0.05rem black;
 }
 
 .counter {
@@ -87,7 +86,7 @@ ul {
 }
 
 .menu-item-list {
-    text-align: center;
+  text-align: center;
 }
 
 .moon-sun {
@@ -98,20 +97,20 @@ ul {
 .remove-all-items-button {
   width: 5.4rem;
   height: 2rem;
-  background-color: #6495ED;
+  background-color: #6495ed;
   border: 0.05rem solid black;
-  box-shadow: 0 0.7rem 0 -0.1rem #6082B6, 0 0.75rem 0 -0.05rem black;
+  box-shadow: 0 0.7rem 0 -0.1rem #6082b6, 0 0.75rem 0 -0.05rem black;
   border-radius: 0.5rem;
 }
 
 .remove-all-items-button:hover {
   transform: translate(0, 0.25rem);
-  box-shadow: 0 0.5rem 0 -0.1rem #6082B6, 0 0.55rem 0 -0.05rem black;
+  box-shadow: 0 0.5rem 0 -0.1rem #6082b6, 0 0.55rem 0 -0.05rem black;
 }
 
 .remove-all-items-button:active {
   transform: translate(0, 0.5rem);
-  box-shadow: 0 0.1rem 0 -0.1rem #6082B6, 0 0.15rem 0 -0.05rem black;
+  box-shadow: 0 0.1rem 0 -0.1rem #6082b6, 0 0.15rem 0 -0.05rem black;
 }
 
 .roulette-wheel {
@@ -129,19 +128,19 @@ ul {
 }
 
 .winner {
-  font-size: 32;
+  font-size: 32px;
   margin-bottom: 1rem;
   height: 28px;
 }
 
 @media screen and (max-width: 940px) {
-  canvas{
+  canvas {
     margin-top: 5rem;
     height: 20rem;
     margin: auto;
   }
 
-  .menu{
+  .menu {
     width: 23.5rem;
   }
 
