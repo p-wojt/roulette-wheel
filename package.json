@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "webpack-dev-server",
-    "build": "webpack --config webpack.config.prod.js && cp index.html dist/index.html && cp app.css dist/app.css"
+    "build": "webpack --config webpack.config.prod.js && cp index.html dist/index.html && cp app.css dist/app.css && cp -r static dist/static"
   },
   "author": {
     "name": "Patryk Wojtiuk",
