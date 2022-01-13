@@ -47,6 +47,7 @@ const WHEEL_OFFSET = 5;
 const X_CENTER = canvasEl.width / 2;
 const Y_CENTER = canvasEl.height / 2;
 const RADIUS = canvasEl.height / 2 - WHEEL_OFFSET;
+const TIME_TO_REDRAW = 1000 / ANIMATION_FPS;
 
 const itemsList = new ItemList(MAXIMUM_SIZE);
 const items: MenuItem[] = [];
@@ -72,7 +73,6 @@ function configure() {
     authorsEl.hidden = !authorsEl.hidden;
   });
 }
-
 
 function addRemoveItem() {
   addButtonEl.addEventListener("click", () => {
@@ -154,28 +154,6 @@ function removeAllItems() {
   });
 }
 
-
-function lightDarkMode() {
-  lightDarkModeEl.addEventListener("click", () => {
-    modeEl.animate([{ transform: "rotate(360deg)" }], {
-      duration: 500,
-    });
-
-    if (LightDarkMode.currentMode == "dark") {
-      modeEl.src = "static/sun.png";
-      bodyEl.style.backgroundColor = "#FAF9F6";
-      bodyEl.style.color = "black";
-      LightDarkMode.currentMode = "light";
-    } else {
-      modeEl.src = "static/moon.png";
-      bodyEl.style.backgroundColor = "#121212";
-      bodyEl.style.color = "white";
-      LightDarkMode.currentMode = "dark";
-    }
-  });
-}
-
-
 function updateCounter() {
   counterEl.textContent = `${itemsList.items.length}/${MAXIMUM_SIZE}`;
   animateCounter();
@@ -190,20 +168,29 @@ function animateCounter() {
   );
 }
 
-function animateWinner() {
-  winnerEl.animate(
-    {
-      opacity: [0.5, 1],
-      easing: ["ease-in", "ease-out"],
-    },
-    1000
-  );
+function lightDarkMode() {
+  lightDarkModeEl.addEventListener("click", () => {
+    modeEl.animate([{ transform: "rotate(360deg)" }], {
+      duration: 500,
+    });
+
+    if (LightDarkMode.currentMode === "dark") {
+      modeEl.src = "static/sun.png";
+      bodyEl.style.backgroundColor = "#FAF9F6";
+      bodyEl.style.color = "black";
+      LightDarkMode.currentMode = "light";
+    } else {
+      modeEl.src = "static/moon.png";
+      bodyEl.style.backgroundColor = "#121212";
+      bodyEl.style.color = "white";
+      LightDarkMode.currentMode = "dark";
+    }
+  });
 }
 
 function drawRouletteWheel(angle: number) {
   const segmentWidth = 360 / items.length;
-  let startAngle = angle;
-  let endAngle = segmentWidth + startAngle;
+  let endAngle = segmentWidth + angle;
   ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
   ctx.beginPath();
   ctx.save();
@@ -215,19 +202,21 @@ function drawRouletteWheel(angle: number) {
   ctx.fill();
   ctx.stroke();
   ctx.restore();
-  ctx.arc(X_CENTER, Y_CENTER, RADIUS, 0, Math.PI * 2, true);
+  ctx.arc(X_CENTER, Y_CENTER, RADIUS, 0, Math.PI * 2);
   ctx.stroke();
   for (let i = 0; i < items.length; i++) {
     ctx.beginPath();
     ctx.lineTo(X_CENTER, Y_CENTER);
-    ctx.font = "bold 24px verdana, sans-serif";
+    console.log(outerHeight);
+    console.log(outerWidth);
+    if (outerWidth < 1280) ctx.font = "bold 10px verdana, sans-serif";
+    else ctx.font = "bold 24px verdana, sans-serif";
     ctx.arc(
       X_CENTER,
       Y_CENTER,
       RADIUS,
-      (startAngle * Math.PI) / 180,
-      (endAngle * Math.PI) / 180,
-      false
+      (angle * Math.PI) / 180,
+      (endAngle * Math.PI) / 180
     );
     ctx.lineTo(X_CENTER, Y_CENTER);
     ctx.fillStyle = itemsList.items[i].color;
@@ -236,11 +225,11 @@ function drawRouletteWheel(angle: number) {
     ctx.fillStyle = "black";
     const text = itemsList.items[i].name;
     if (items.length > 1) {
-      const angleVal = ((startAngle + segmentWidth / 2) * Math.PI) / 180;
+      const angleVal = ((angle + segmentWidth / 2) * Math.PI) / 180;
       const xT = X_CENTER + (Math.cos(angleVal) * RADIUS) / 2;
       const xY = Y_CENTER + (Math.sin(angleVal) * RADIUS) / 2;
       ctx.translate(xT, xY);
-      ctx.rotate(Math.PI / items.length + (Math.PI / 180) * startAngle);
+      ctx.rotate(Math.PI / items.length + (Math.PI / 180) * angle);
       ctx.fillText(text, -ctx.measureText(text).width / 2, 0);
     } else {
       ctx.fillText(text, X_CENTER, Y_CENTER);
@@ -249,7 +238,7 @@ function drawRouletteWheel(angle: number) {
     if (items.length !== 1) {
       ctx.stroke();
     }
-    startAngle += segmentWidth;
+    angle += segmentWidth;
     endAngle += segmentWidth;
   }
 }
@@ -262,34 +251,27 @@ let winner: string;
 let endTime: number;
 
 function startRoulette() {
-  if (!animationId) {
-    const winnerCleared = clearWinner();
-    if (winnerCleared) {
-      drawRouletteWheel(0);
-    } else {
-      addButtonEl.style.background = "#C0C0C0";
-      removeAllItemsButtonEl.style.background = "#C0C0C0";
-      guessItemIndex = Math.floor(Math.random() * items.length);
-      winner = itemsList.items[guessItemIndex].name;
-      segmentAngle = 360 / items.length;
-      totalTime = 0;
-      maxAngle =
-        360 * ROTATIONS +
-        (items.length - 1 - guessItemIndex) * segmentAngle +
-        Math.random() * segmentAngle;
-      endTime = (maxAngle / rotate_by) * (1000 / ANIMATION_FPS);
-      beginAnimateRoulette();
+  if (items.length > 1) {
+    if (!animationId) {
+      const winnerCleared = clearWinner();
+      if (winnerCleared) {
+        drawRouletteWheel(0);
+      } else {
+        addButtonEl.style.background = "#C0C0C0";
+        removeAllItemsButtonEl.style.background = "#C0C0C0";
+        guessItemIndex = Math.floor(Math.random() * items.length);
+        winner = itemsList.items[guessItemIndex].name;
+        segmentAngle = 360 / items.length;
+        totalTime = 0;
+        maxAngle =
+          360 * ROTATIONS +
+          (items.length - 1 - guessItemIndex) * segmentAngle +
+          Math.random() * segmentAngle;
+        endTime = (maxAngle / rotate_by) * TIME_TO_REDRAW;
+        beginAnimateRoulette();
+      }
     }
   }
-}
-
-function clearWinner() {
-  if (winner) {
-    winner = "";
-    winnerEl.textContent = "";
-    return true;
-  }
-  return false;
 }
 
 function beginAnimateRoulette() {
@@ -297,9 +279,9 @@ function beginAnimateRoulette() {
   if (totalTime < endTime || maxAngle - angle > 0.1) {
     setTimeout(() => {
       drawRouletteWheel(angle);
-      totalTime += 1000 / ANIMATION_FPS;
+      totalTime += TIME_TO_REDRAW;
       animationId = window.requestAnimationFrame(beginAnimateRoulette);
-    }, 1000 / ANIMATION_FPS);
+    }, TIME_TO_REDRAW);
   } else {
     window.cancelAnimationFrame(animationId!);
     animationId = null;
@@ -310,7 +292,6 @@ function beginAnimateRoulette() {
   }
 }
 
-
 function easeOut(
   time: number,
   beginningVal: number,
@@ -320,4 +301,23 @@ function easeOut(
   return time == duration
     ? beginningVal + toChange
     : toChange * (-Math.pow(2, (-10 * time) / duration) + 1) + beginningVal;
+}
+
+function animateWinner() {
+  winnerEl.animate(
+    {
+      opacity: [0.5, 1],
+      easing: ["ease-in", "ease-out"],
+    },
+    1000
+  );
+}
+
+function clearWinner() {
+  if (winner) {
+    winner = "";
+    winnerEl.textContent = "";
+    return true;
+  }
+  return false;
 }

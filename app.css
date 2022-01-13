@@ -133,7 +133,7 @@ ul {
   height: 28px;
 }
 
-@media screen and (max-width: 940px) {
+@media screen and (max-width: 1280px) {
   canvas {
     margin-top: 5rem;
     height: 20rem;
