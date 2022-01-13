@@ -35,6 +35,8 @@ const canvasWrapper = document.getElementsByClassName(
   "roulette-wheel"
 )[0]! as HTMLDivElement;
 
+const audio = new Audio("/static/roulette-wheel.mp3");
+
 const ctx = canvasEl.getContext("2d")!;
 
 canvasEl.width = canvasWrapper.offsetWidth;
@@ -59,6 +61,7 @@ configure();
 
 function configure() {
   counterEl.textContent = `0/${MAXIMUM_SIZE}`;
+  audio.volume = 0.2;
 
   LightDarkMode.currentMode = "dark";
   IdPool.initializeIdsPool(MAXIMUM_SIZE);
@@ -257,6 +260,7 @@ function startRoulette() {
       if (winnerCleared) {
         drawRouletteWheel(0);
       } else {
+        audio.play();
         addButtonEl.style.background = "#C0C0C0";
         removeAllItemsButtonEl.style.background = "#C0C0C0";
         guessItemIndex = Math.floor(Math.random() * items.length);
