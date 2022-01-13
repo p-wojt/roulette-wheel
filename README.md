@@ -14,6 +14,6 @@ Application used for entertainment. It helps to decide if we are not determined 
 
 ## Demo
 
-**Live: **
+**Live: https://heuristic-jepsen-6c6fd2.netlify.app**
 
 ![roulette-wheel](pictures/view.png)
