@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "webpack-dev-server",
-    "build": "webpack --config config.prod.js"
+    "build": "webpack --config webpack.config.prod.js"
   },
   "author": {
     "name": "Patryk Wojtiuk",
