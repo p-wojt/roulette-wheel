@@ -204,8 +204,6 @@ function drawRouletteWheel(angle: number) {
   for (let i = 0; i < items.length; i++) {
     ctx.beginPath();
     ctx.lineTo(X_CENTER, Y_CENTER);
-    console.log(outerHeight);
-    console.log(outerWidth);
     ctx.font = "bold 24px verdana, sans-serif";
     ctx.arc(
       X_CENTER,
