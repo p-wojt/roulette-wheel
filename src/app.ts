@@ -31,16 +31,10 @@ const footerEl = document.querySelector("footer")!;
 const authorsEl = document.getElementsByClassName(
   "icons-authors"
 )[0]! as HTMLDivElement;
-const canvasWrapper = document.getElementsByClassName(
-  "roulette-wheel"
-)[0]! as HTMLDivElement;
 
 const audio = new Audio("/static/roulette-wheel.mp3");
 
 const ctx = canvasEl.getContext("2d")!;
-
-canvasEl.width = canvasWrapper.offsetWidth;
-canvasEl.height = canvasWrapper.offsetHeight;
 
 const MAXIMUM_SIZE = 16;
 const ROTATIONS = 20;
@@ -212,8 +206,7 @@ function drawRouletteWheel(angle: number) {
     ctx.lineTo(X_CENTER, Y_CENTER);
     console.log(outerHeight);
     console.log(outerWidth);
-    if (outerWidth < 1280) ctx.font = "bold 10px verdana, sans-serif";
-    else ctx.font = "bold 24px verdana, sans-serif";
+    ctx.font = "bold 24px verdana, sans-serif";
     ctx.arc(
       X_CENTER,
       Y_CENTER,
