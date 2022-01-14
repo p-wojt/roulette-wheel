@@ -79,6 +79,8 @@ function addRemoveItem() {
       if (name) {
         const id = IdPool.getAnId();
         if (id) {
+          inputEl.value = "";
+
           const color = avaliableRGBs[id % avaliableRGBs.length];
           const item = new Item(id, name, color);
           const menuItem = new MenuItem(id, name, color);
