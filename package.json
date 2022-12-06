@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "webpack-dev-server --host 0.0.0.0 --allowed-hosts all",
-    "build": "webpack --config webpack.config.prod.js && cp *.html dist/ && cp *.css dist/ && cp -r static dist/static && cp *.ico dist/"
+    "build": "webpack --config webpack.config.prod.js && cp *.html dist/ && cp *.css dist/ && cp -r static dist/static && cp *.ico dist/ && cp -r dist/scripts scripts"
   },
   "author": {
     "name": "Patryk Wojtiuk",
